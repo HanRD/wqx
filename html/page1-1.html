@@ -11,9 +11,15 @@
 <style>
         html,body{
             height: 100%;
-            overflow: hidden;
         }
         .tab1{width:100%;}
+        .treecontainer{
+            width:15%;
+        }
+        .ivu-tabs{
+          overflow: visible;
+        }
+
 </style>
 </head>
 <body>    
@@ -21,13 +27,8 @@
                <tabs value="tab1">
                   <tab-pane label="系统操作员管理" name="tab1" class="tab1">
                  <template>
-			      <Row type="flex" align="top">
-				  <Col span="12" order="1">
-				  <Tree :data="Treedata"></Tree>
-				  </Col>
-				  <Col span="12" order="2"><div class="col2" id="col2"></div>
-				  </Col>
-			       </Row>
+                  <div class="col2" id="col2">
+                  </div>
                 </template>
 			      </tab-pane>
                               <tab-pane label="系统操作日志查询" name="tab2">标签二的内容</tab-pane>
@@ -40,74 +41,56 @@
 <script>
     var form1 ={
         template:`
-    <i-form :model="formItem" :label-width="80">
-        <form-item label="Input">
-            <i-input v-model="formItem.input" placeholder="Enter something..."></i-input>
-        </form-item>
-        <form-item label="Select">
-            <i-select v-model="formItem.select">
-                <i-option value="beijing">New York</i-option>
-                <i-option value="shanghai">London</i-option>
-                <i-option value="shenzhen">Sydney</i-option>
-            </i-select>
-        </form-item>
-        <form-item label="DatePicker">
-            <row>
-                <i-col span="11">
-                    <date-picker type="date" placeholder="Select date" v-model="formItem.date"></date-picker>
-                </i-col>
-                <i-col span="2" style="text-align: center">-</i-col>
-                <i-col span="11">
-                    <time-picker type="time" placeholder="Select time" v-model="formItem.time"></time-picker>
-                </i-col>
-            </row>
-        </form-item>
-        <form-item label="Radio">
-            <radio-group v-model="formItem.radio">
-                <radio label="male">Male</radio>
-                <radio label="female">Female</radio>
-            </radio-group>
-        </form-item>
-        <form-item label="Checkbox">
-            <checkbox-group v-model="formItem.checkbox">
-                <checkbox label="Eat"></checkbox>
-                <checkbox label="Sleep"></checkbox>
-                <checkbox label="Run"></checkbox>
-                <checkbox label="Movie"></checkbox>
-            </checkbox-group>
-        </form-item>
-        <form-item label="Switch">
-            <i-switch v-model="formItem.switch" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
-            </i-switch>
-        </form-item>
-        <form-item label="Slider">
-            <slider v-model="formItem.slider" range></slider>
-        </form-item>
-        <form-item label="Text">
-            <i-input v-model="formItem.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></i-input>
-        </form-item>
-        <form-item>
-            <i-button type="primary">Submit</i-button>
-            <i-button type="ghost" style="margin-left: 8px">Cancel</i-button>
-        </form-item>
-    </i-form>
-    `,
+           <Form ref="querycontents" :model="querycontents" label-position="left" :label-width="60" inline>
+                        <FormItem prop="id" label="所属机构">
+                          <Input type="text" v-model="querycontents.id" placeholder="请输入用户编码">
+                          </Input>
+                        </FormItem>
+                        <FormItem prop="id" label="用户编码">
+                          <Input type="text" v-model="querycontents.id" placeholder="请输入用户编码">
+                          </Input>
+                        </FormItem>
+                        <FormItem prop="pid" label="身份证号">
+                          <Input type="text" v-model="querycontents.pid" placeholder="请输入身份证号">
+                          </Input>
+                        </FormItem>
+                        <FormItem prop="phonenumber" label="手机号码">
+                          <Input type="text" v-model="querycontents.phonenumber" placeholder="请输入手机号码">
+                          </Input>
+                        </FormItem>
+                        <FormItem prop="name" label="姓名">
+                          <Input type="text" v-model="querycontents.name" placeholder="请输入姓名">
+                          </Input>
+                        </FormItem>
+                        <FormItem prop="oplevel" label="操作等级">
+                          <Select v-model="querycontents.oplevel">
+                            <Option value="1">一级</Option>
+                            <Option value="2">二级</Option>
+                            <Option value="3">三级</Option>
+                            <Option value="4">四级</Option>
+                          </Select>
+                        </FormItem>
+                        <FormItem>
+                            <Button type="primary" @click="handleSubmit(querycontents)">搜索</Button>
+                        </FormItem>
+                      </Form>
+           `,
     data:function(){
         return{
-            formItem: {
-                    input: '',
-                    select: '',
-                    radio: 'male',
-                    checkbox: [],
-                    switch: true,
-                    date: '',
-                    time: '',
-                    slider: [20, 50],
-                    textarea: ''
+           
+           querycontents:{
+            id:"",
+            pid:"",
+            phonenumber:"",
+            name:"",
+            oplevel:""
+           }
         }
-    }
+    },
+    methods:{
+        handleSubmit(data){
+            console.log(data);
+        }
     }
 }
     var Main = {
@@ -146,20 +129,15 @@
                         ]
                     }
                 ],
-				formTop: {
-                    input1: '',
-                    input2: '',
-                    input3: ''
-                }
+				
             }
         },
-        //动态变更内容区大小
+        
         mounted: function () {
 
         }
     }
-    
-    var Form1= Vue.extend(form1)
+    var Form1 = Vue.extend(form1)
     var Component = Vue.extend(Main)
     new Component().$mount('#app')
     new Form1().$mount('#col2')
