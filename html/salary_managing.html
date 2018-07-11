@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SalaryManaging</title>
+	<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+</head>
+<body>
+	<div id="query">
+	<i-form :model="querydata" label-position="left" :label-width="70" inline>
+		<form-item prop="organization" label="维护公司:">
+			<i-select style="width:164px" v-model="querydata.organization" >
+				<i-option v-for="item in organizationlist" :value="item.value" :key="item.value">{{item.title}}</i-option>
+			</i-select>
+		</form-item>
+		<form-item prop="username" label="用户名:">
+			<i-input type="text" v-model="querydata.username" placeholder="请输入用户名"></i-input>
+		</form-item>
+		<form-item prop="staffname" label="姓名:">
+			<i-input type="text" v-model="querydata.staffname" placeholder="请输入维护人员姓名"></i-input>
+		</form-item>
+		<form-item prop="staffpid" label="身份证号:">
+			<i-input type="text" v-model="querydata.staffpid" placeholder="请输入维护人员身份证号"></i-input>
+		</form-item>
+		<form-item prop="date" label="起始结束时间:" :label-width="100">
+			<date-picker v-model="querydata.date" type="daterange" split-panels placeholder="选择起始结束日期"></date-picker>
+		</form-item>
+		<form-item><i-button type="primary" @click="submit(querydata)">搜索</i-button></form-item>
+	</i-form>
+    </div>
+<script type="text/javascript" src="../ivue/vue.min.js"></script>
+<script type="text/javascript" src="../ivue/iview.js"></script>
+<script>
+	var queryform={
+		data:function(){
+			return{
+				querydata:{
+					organization:"",
+					username:"",
+					staffname:"",
+					staffpid:"",
+					date:"",
+					status:"",
+				},
+				organizationlist:[
+				{value:"supident",title:"天识科技有限公司"},
+				{value:"test",title:"测试公司"},
+				{value:"coop1",title:"公司A"},
+				{value:"coop2",title:"公司B"},
+				{value:"coop3",title:"公司C"},
+				{value:"coop4",title:"公司D"},
+				{value:"coop5",title:"公司E"},
+				],
+				statuslist:[
+				{value:"status1",title:"预结算"},
+				{value:"status2",title:"结算"},
+				{value:"status3",title:"撤销"},
+				{value:"status4",title:"提请付款"},
+				{value:"status5",title:"付款中"},
+				{value:"status6",title:"已付款"},
+				]
+
+			}
+		},
+		methods:{
+			submit(data){
+				console.log(data)
+			}
+		}
+	}
+	var table={
+		template:``,
+		data:function(){
+			return{
+				columns:[
+				{title:'序号',key:'No'},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				{title:'',key:''},
+				]
+			}
+		}
+	}
+	var Queryform=Vue.extend(queryform)
+	new Queryform().$mount('#query')
+</script>
+</body>
+</html>
