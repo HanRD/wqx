@@ -75,7 +75,7 @@
 	var table={
 		template:`
 		<div>
-		<Table border stripe :columns="columns" :data="data"></Table>
+		<Table border stripe :columns="columns" highlight-row :data="data"></Table>
 		<Button @click="revisethisdoc()" id="btn1">修改</Button>
         <Button @click="newdocument()" id="btn2">预结算</Button>
         <Button @click="" id="btn3">结算</Button>
@@ -95,41 +95,45 @@
                 </FormItem>
 
                 <FormItem label='用户名:'>
-                  <Select v-model="documentdata.staffname" style="width:100%">
+                  <Select v-model="documentdata.username" style="width:100%">
                     <Option v-for="item in stafflist" :value="item.value" :key="item.value">{{ item.title }}</Option>
                   </Select>
                 </FormItem>
 
+                <FormItem prop="date" label="起始结束时间:" label-width="100%">
+			      <DatePicker v-model="documentdata.date" type="daterange" split-panels placeholder="选择起始结束日期"></DatePicker>
+			    </FormItem>
+
                 <FormItem label='基本工资:'>
-                  <Input v-model="documentdata.basicsalary"></Input>
+                  <Input v-model="documentdata.basicsalary" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='维护工资:'>
-                  <Input v-model="documentdata.maintenancesalary"></Input>
+                  <Input v-model="documentdata.maintenancesalary" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='服务质量奖励:'>
-                  <Input v-model="documentdata.qosbonus"></Input>
+                  <Input v-model="documentdata.qosbonus" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='奖惩金额:'>
-                  <Input v-model="documentdata.bonusamount"></Input>
+                  <Input v-model="documentdata.bonusamount" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='个税:'>
-                  <Input v-model="documentdata.personaltax"></Input>
+                  <Input v-model="documentdata.personaltax" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='补贴:'>
-                  <Input v-model="documentdata.allowance"></Input>
+                  <Input v-model="documentdata.allowance" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='发单管理奖励:'>
-                  <Input v-model="documentdata.mngbonus"></Input>
+                  <Input v-model="documentdata.mngbonus" @on-change="calculatepayment"></Input>
                 </FormItem>
 
                 <FormItem label='实发工资合计:'>
-                  <Input v-model="documentdata.payment"></Input>
+                  <Input v-model="documentdata.payment" readonly></Input>
                 </FormItem>
 
                 <FormItem label='备注:'>
@@ -158,8 +162,8 @@
 				{title:"奖惩金额",key:"bonusamount"},
 				{title:"个税",key:"personaltax"},
 				{title:"实发工资合计",key:"payment"},
-				{title:"开始时间",key:"starttime"},
-				{title:"结束时间",key:"endtime"},
+				{title:"开始时间",key:"startdate"},
+				{title:"结束时间",key:"enddate"},
 				{title:"结算状态",key:"status"},
 				{title:"结算备注",key:"note"},
 				],
@@ -167,16 +171,17 @@
 				documentdata:{
 					organization:"",
 					username:"",
+					date:"",
 					startdate:"",
 					enddate:"",
-					basicsalary:"",
-					maintenancesalary:"",
-					qosbonus:"",
-					bonusamount:"",
-					personaltax:"",
-					payment:"",
-					allowance:"",
-					mngbonus:"",
+					basicsalary:0,
+					maintenancesalary:0,
+					qosbonus:0,
+					bonusamount:0,
+					personaltax:0,
+					payment:0,
+					allowance:0,
+					mngbonus:0,
 					note:""
 				},
 				organizationlist:[
@@ -205,6 +210,14 @@
 				{value:"staff10",title:"员工お"},
 				{value:"staff11",title:"员工か"},
 				{value:"staff12",title:"员工き"},
+				],
+				statuslist:[
+				{value:"status1",title:"预结算"},
+				{value:"status2",title:"结算"},
+				{value:"status3",title:"撤销"},
+				{value:"status4",title:"提请付款"},
+				{value:"status5",title:"付款中"},
+				{value:"status6",title:"已付款"},
 				]
 
 			}
@@ -214,7 +227,7 @@
 				console.log(this.$data);
 				this.$data.modaltitle="新增预结算信息"
 				this.$data.showmodal=true;
-				
+				this.$data.stafflist=this.$data.stafflist1;
 			},
 			revisethisdoc(){
 				this.$data.modaltitle="修改预结算信息"
@@ -235,7 +248,15 @@
 			    	this.$data.stafflist=[];
 			    }
 			},
+			calculatepayment(){
+				this.$data.documentdata.payment=parseFloat(this.$data.documentdata.basicsalary)+parseFloat(this.$data.documentdata.maintenancesalary)+parseFloat(this.$data.documentdata.qosbonus)+parseFloat(this.$data.documentdata.bonusamount)+parseFloat(this.$data.documentdata.allowance)+parseFloat(this.$data.documentdata.mngbonus)-parseFloat(this.$data.documentdata.personaltax)
+			},
 			ok(){
+				if(this.$data.documentdata.date[0]&&this.$data.documentdata.date[1]){
+				this.$data.documentdata.startdate=this.$data.documentdata.date[0].toLocaleDateString();
+				this.$data.documentdata.enddate=this.$data.documentdata.date[1].toLocaleDateString();
+			    }
+				this.$data.documentdata.status=this.$data.statuslist[0].title;
 				this.$data.data.push(this.$data.documentdata)
 			},
 			cancel(){
