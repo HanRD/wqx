@@ -28,6 +28,10 @@
 		<form-item><i-button type="primary" @click="submit(querydata)">搜索</i-button></form-item>
 	</i-form>
     </div>
+    <div id="table">
+    	
+    </div>
+
 <script type="text/javascript" src="../ivue/vue.min.js"></script>
 <script type="text/javascript" src="../ivue/iview.js"></script>
 <script>
@@ -69,31 +73,180 @@
 		}
 	}
 	var table={
-		template:``,
+		template:`
+		<div>
+		<Table border stripe :columns="columns" :data="data"></Table>
+		<Button @click="revisethisdoc()" id="btn1">修改</Button>
+        <Button @click="newdocument()" id="btn2">预结算</Button>
+        <Button @click="" id="btn3">结算</Button>
+        <Button @click="" id="btn4">撤销</Button>
+        <Button @click="" id="btn5">提请付款</Button>
+        <Button @click="" id="btn6">输出</Button>
+        <Modal id="newwin" scrollable='true' v-model='showmodal' :closable="false" :mask-closable="false" @on-ok="ok()" @on-cancel="cancel()">
+            <p slot="header" style="color:#308ef0;text-align:center">
+            <span>{{modaltitle}}</span>
+            </p>
+            <Form ref="documentform" :model="documentdata" label-position="left" :label-width="70" >
+
+                <FormItem label='维护公司:'>
+                    <Select label='supident' v-model="defaultorganization" style="width:100%" @on-change="observechange" label-in-value=true>
+                        <Option v-for="item in organizationlist" :value="item.value" :key="item.value">{{ item.title }}</Option>
+                    </Select>
+                </FormItem>
+
+                <FormItem label='用户名:'>
+                  <Select v-model="documentdata.staffname" style="width:100%">
+                    <Option v-for="item in stafflist" :value="item.value" :key="item.value">{{ item.title }}</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='基本工资:'>
+                  <Input v-model="documentdata.basicsalary"></Input>
+                </FormItem>
+
+                <FormItem label='维护工资:'>
+                  <Input v-model="documentdata.maintenancesalary"></Input>
+                </FormItem>
+
+                <FormItem label='服务质量奖励:'>
+                  <Input v-model="documentdata.qosbonus"></Input>
+                </FormItem>
+
+                <FormItem label='奖惩金额:'>
+                  <Input v-model="documentdata.bonusamount"></Input>
+                </FormItem>
+
+                <FormItem label='个税:'>
+                  <Input v-model="documentdata.personaltax"></Input>
+                </FormItem>
+
+                <FormItem label='补贴:'>
+                  <Input v-model="documentdata.allowance"></Input>
+                </FormItem>
+
+                <FormItem label='发单管理奖励:'>
+                  <Input v-model="documentdata.mngbonus"></Input>
+                </FormItem>
+
+                <FormItem label='实发工资合计:'>
+                  <Input v-model="documentdata.payment"></Input>
+                </FormItem>
+
+                <FormItem label='备注:'>
+                  <Input type="textarea" v-model="documentdata.note"></Input>
+                </FormItem>
+            <Formitem class=""></Formitem>
+            <Formitem class=""></Formitem>
+            </Form>
+        </Modal>
+        </div>`,
 		data:function(){
 			return{
+				defaultorganization:'supident',
+				showmodal:false,
+				modaltitle:"嗯哼!",
 				columns:[
-				{title:'序号',key:'No'},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
-				{title:'',key:''},
+				{title:"序号",key:"No"},
+				{title:"用户名",key:"username"},
+				{title:"维护人员姓名",key:"staffname"},
+				{title:"身份证号",key:"staffpid"},
+				{title:"基本工资",key:"basicsalary"},
+				{title:"维护工资",key:"maintenancesalary"},
+				{title:"补贴",key:"allowance"},
+				{title:"服务质重奖励",key:"qosbonus"},
+				{title:"发单管理奖励",key:"mngbonus"},
+				{title:"奖惩金额",key:"bonusamount"},
+				{title:"个税",key:"personaltax"},
+				{title:"实发工资合计",key:"payment"},
+				{title:"开始时间",key:"starttime"},
+				{title:"结束时间",key:"endtime"},
+				{title:"结算状态",key:"status"},
+				{title:"结算备注",key:"note"},
+				],
+				data:[],
+				documentdata:{
+					organization:"",
+					username:"",
+					startdate:"",
+					enddate:"",
+					basicsalary:"",
+					maintenancesalary:"",
+					qosbonus:"",
+					bonusamount:"",
+					personaltax:"",
+					payment:"",
+					allowance:"",
+					mngbonus:"",
+					note:""
+				},
+				organizationlist:[
+				{value:"supident",title:"天识科技有限公司"},
+				{value:"test",title:"测试公司"},
+				{value:"coop1",title:"公司A"},
+				{value:"coop2",title:"公司B"},
+				{value:"coop3",title:"公司C"},
+				{value:"coop4",title:"公司D"},
+				{value:"coop5",title:"公司E"},
+				],
+				stafflist:[
+				],
+				stafflist1:[
+				{value:"staff1",title:"员工A"},
+				{value:"staff2",title:"员工B"},
+				{value:"staff3",title:"员工C"},
+				{value:"staff4",title:"员工D"},
+				{value:"staff5",title:"员工E"},
+				],
+				stafflist2:[
+				{value:"staff6",title:"员工あ"},
+				{value:"staff7",title:"员工い"},
+				{value:"staff8",title:"员工う"},
+				{value:"staff9",title:"员工え"},
+				{value:"staff10",title:"员工お"},
+				{value:"staff11",title:"员工か"},
+				{value:"staff12",title:"员工き"},
 				]
+
+			}
+		},
+		methods:{
+			newdocument(){
+				console.log(this.$data);
+				this.$data.modaltitle="新增预结算信息"
+				this.$data.showmodal=true;
+				
+			},
+			revisethisdoc(){
+				this.$data.modaltitle="修改预结算信息"
+				this.$data.showmodal=true;
+			},
+			observechange(value){
+				console.log(value)
+				if (value.value=='supident'||value.value=='test'||value.value=='coop1') {
+					this.$data.stafflist=this.$data.stafflist1;
+				}
+			    if (value.value=='coop2'||value.value=='coop3'||value.value=='coop4') {
+			    	this.$data.stafflist=this.$data.stafflist2;
+			    }
+			    if (value.value=='coop4'){
+			    	this.$data.stafflist=this.$data.stafflist1.concat(this.$data.stafflist2);
+			    }
+			    if (value.value=='coop5'){
+			    	this.$data.stafflist=[];
+			    }
+			},
+			ok(){
+				this.$data.data.push(this.$data.documentdata)
+			},
+			cancel(){
+				this.$refs['documentform'].resetFields();
 			}
 		}
 	}
+	var Resulttable=Vue.extend(table)
 	var Queryform=Vue.extend(queryform)
 	new Queryform().$mount('#query')
+	new Resulttable().$mount('#table')
 </script>
 </body>
 </html>
