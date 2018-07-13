@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>FaultinfoMNG</title>
+	<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+</head>
+<body>
+    <div id="app">
+	<Row type="flex" :gutter="12">
+		<i-col :md="11" :xs="24">
+            <div width="100%">
+            <Card shadow>
+			<p slot="title">查询报障信息</p>
+			<div id="query"></div>
+			<div id="table"></div>
+            </Card>
+            </div>
+		</i-col>
+		<i-col :md="12" :xs="24">
+			<div width="100%" id="detail"></div>
+		</i-col>
+	</Row>
+    </div>
+	<script type="text/javascript" src="../ivue/vue.min.js"></script>
+    <script type="text/javascript" src="../ivue/iview.js"></script>
+<script type="text/javascript" src=/>
+    <script>
+        var wrapper={}
+        var map = new BMap.Map("container"); 
+    	var query={
+            template:`
+
+            `,
+    		data:function(){
+    			return{
+    				querydata:{
+                        stationName:"",
+                        stationID:"",
+                        submitdate:"",
+                        startdate:"",
+                        enddate:"",
+                        submittype:"",
+                        submitBy:{name:"",ID:""}
+    				}
+    			}
+    		}
+    	}
+    	var table={
+            template:`<div>
+                      <Table border stripe :columns="columns" highlight-row :data="data"></Table>
+                      </div>`,
+    		data:function(){
+    			return{
+                    columns:[
+                    {title:'序号',key:''},
+                    {title:'编号',key:''},
+                    {title:'报障台站号',key:''},
+                    {title:'状态',key:''},
+                    {title:'提交人',key:''},
+                    {title:'提交时间',key:''},
+                    ],
+                    data:[]
+
+                }
+            }
+        }
+    	var detail={
+            template:`<div>
+            <Card shadow>
+                <p slot="title">Use a card with a shadow effect</p>
+                <p>报障方式: {{detaildata.reportmethod}}</p>
+                <p><Row>
+                <Col span="8">编号：{{detaildata.id}}</Col>
+                <Col span="8">台站号：{{detaildata.stationID}}</Col>
+                <Col span="8">台站名：{{detaildata.stationName}}</Col>
+                </Row></p>
+                <p><div width="100%" id="container">{{detaildata.coordinate}}</div></p>
+                <p>地址：{{detaildata.address}}</p>
+            </Card>
+            </div>`,
+    		data:function(){
+    			return{
+                    detaildata:{
+                        reportmethod:"",
+                        upgradedata:{by:"",date:"",upgradefrom:""},
+                        id:"",
+                        stationID:"",
+                        stationName:"",
+                        coordinate:"",
+                        address:"",
+                        stationtype:"",
+                        description:"",
+                        analyze:"",
+                        tools:"",
+                        timedemand:"",
+                        note:"",
+                        submitBy:"",
+                        submittime:"",
+                        photograph:"",
+                    }
+    			}
+    		}
+    	}
+        Wrapper=Vue.extend(wrapper)
+        Query=Vue.extend(query)
+        Table=Vue.extend(table)
+        Detail=Vue.extend(detail)
+        new Wrapper().$mount('#app')
+        new Query().$mount('#query')
+        new Table().$mount('#table')
+        new Detail().$mount('#detail')
+
+    </script>
+</body>
+</html>
