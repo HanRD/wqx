@@ -24,13 +24,17 @@
     </div>
 	<script type="text/javascript" src="../ivue/vue.min.js"></script>
     <script type="text/javascript" src="../ivue/iview.js"></script>
-<script type="text/javascript" src=/>
     <script>
         var wrapper={}
-        var map = new BMap.Map("container"); 
     	var query={
             template:`
-
+            <Form :model="querydata" :label-width="80" inline>
+            <FormItem label="台站:"><Input v-model="querydata.stationName"></Input></FormItem>
+            <FormItem label="提交日期:"><DatePicker v-model="querydata.date" type="daterange" split-panels placeholder="选择起始结束日期"></DatePicker></FormItem>
+            <FormItem label="报障方式:"><Input v-model="querydata.submittype"></Input></FormItem>
+            <FormItem label="提交人姓名:"><Input v-model="querydata.submitBy.name"></Input></FormItem>
+            <Button type="primary" @click="submit(querydata)">搜索</Button>
+            </Form>
             `,
     		data:function(){
     			return{
@@ -44,7 +48,12 @@
                         submitBy:{name:"",ID:""}
     				}
     			}
-    		}
+    		},
+            methods:{
+                submit(data){
+                    console.log(data)
+                }
+            }
     	}
     	var table={
             template:`<div>
@@ -68,7 +77,7 @@
     	var detail={
             template:`<div>
             <Card shadow>
-                <p slot="title">Use a card with a shadow effect</p>
+                <p slot="title">报障信息</p>
                 <p>报障方式: {{detaildata.reportmethod}}</p>
                 <p><Row>
                 <Col span="8">编号：{{detaildata.id}}</Col>
@@ -77,6 +86,17 @@
                 </Row></p>
                 <p><div width="100%" id="container">{{detaildata.coordinate}}</div></p>
                 <p>地址：{{detaildata.address}}</p>
+                <p>站点类型：{{detaildata.stationtype}}</p>
+                <p>故障现象描述：{{detaildata.description}}</p>
+                <p>故障类型：{{detaildata.faulttype}}</p>
+                <p>故障分析(可能原因、部位)：{{detaildata.analyze}}</p>
+                <p>维修工具、备件：{{detaildata.tools}}</p>
+                <p>维护时间要求：{{detaildata.timedemand}}</p>
+                <p>备注：{{detaildata.note}}</p>
+                <p><Row>
+                <Col span="12">提交人员：{{detaildata.submitBy}}</Col>
+                <Col span="12">提交时间：{{detaildata.submittime}}</Col>
+                </Row></p>
             </Card>
             </div>`,
     		data:function(){
@@ -91,6 +111,7 @@
                         address:"",
                         stationtype:"",
                         description:"",
+                        faulttype:"",
                         analyze:"",
                         tools:"",
                         timedemand:"",
