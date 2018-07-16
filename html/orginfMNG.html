@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
 	<title>气象局信息管理</title>
 <link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
 <script type="text/javascript" src="../ivue/vue.min.js"></script>
@@ -11,26 +12,96 @@
 	<div id="infdisplay"></div>
 	<script type="text/javascript">
 		var information={
-			template:"",              //主体模块模板
+			template:`
+			<Row id=""><Col :md="4">
+			<div style="background:#eee;padding: 10px">
+        <Card shadow :bordered="false">
+            <p slot="title">气象局选择</p>
+            <p><Tree ref="orgtree" :data="treedata" @on-check-change="showcheckednodes" show-checkbox></Tree></p>
+        </Card>
+    </div></Col>
+    <Col :md="10">
+    <div style="background:#eee;padding:10px"><Card shadow :bordered="false">
+            <p>编码:{{data.ID}}</p>
+            <p>省属/直辖市:{{data.province}}</p>
+            <p>名称:{{data.name}}</p>
+            <p>地址:{{data.address}}</p>
+            <p>上级气象局:{{data.upperbranch}}</p>
+            <p><Row>
+            <Col span="12">
+            <p>联系人1:\n{{data.contact.name1}}</p>
+            <p>联系电话1:\n{{data.contact.mobile1}}</p>
+            <p>联系邮箱1:\n{{data.contact.email1}}</p>
+            </Col>
+            <Col span="12">
+            <p>联系人2:\n{{data.contact.name2}}</p>
+            <p>联系电话2:\n{{data.contact.mobile2}}</p>
+            <p>联系邮箱2:\n{{data.contact.email2}}</p>
+            </Col>
+            </Row></p>
+            <p>合同名称:</p>
+            <p>合同编号:</p>
+        </Card></div>
+    </Col>
+    </Row>`,              //主体模块模板
 			data:function(){
 				return{
 					data:{            //气象局信息数据
-						ID:"",
-						province:"",
-						name:"",
-						address:"",
-						upperbranch:"",
-						contact:{name1:"",name2:"",mobile1:"",mobile2:"",email1:"",email2:""},
-						contractname:"",
-						contractID:"",
+						ID:"CMA************",
+						province:"四川省",
+						name:"四川省气象局",
+						address:"四川省",
+						upperbranch:"中国气象局",
+						contact:{name1:"张XX",name2:"李XX",mobile1:"12312312321",mobile2:"32132123232",email1:"123@wqx.com",email2:"asd@123.com"},
+						contractname:"合同1",
+						contractID:"2232131234512",
 						contractduration:{startdate:"",enddate:""}
-					}
+					},
+					treedata:[
+                    {
+                        title: 'parent 1',
+                        expand: true,
+                        children: [
+                            {
+                                title: 'parent 1-1',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-1-1'
+                                    },
+                                    {
+                                        title: 'leaf 1-1-2',
+                                        checked:true
+                                    }
+                                ]
+                            },
+                            {
+                                title: 'parent 1-2',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-2-1'
+                                    },
+                                    {
+                                        title: 'leaf 1-2-1'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+					
 				}
 			},
 			methods:{                 //主体模块方法
-
+				showcheckednodes(){
+					console.log(this.$refs.orgtree.getCheckedNodes())
+				}
 			}
 		}
+
+		var InfFrame = Vue.extend(information)
+		new InfFrame().$mount("#infdisplay")
 	</script>
 </body>
 </html>
