@@ -144,6 +144,10 @@
             </Form>
         </Modal>
         </div>`,
+        created:function(){
+        	console.log('main module created')
+        	this.$data.stafflist=this.$data.stafflist1;
+        },
 		data:function(){
 			return{
 				defaultorganization:'supident',
@@ -227,7 +231,7 @@
 				console.log(this.$data);
 				this.$data.modaltitle="新增预结算信息"
 				this.$data.showmodal=true;
-				this.$data.stafflist=this.$data.stafflist1;
+				
 			},
 			revisethisdoc(){
 				this.$data.modaltitle="修改预结算信息"

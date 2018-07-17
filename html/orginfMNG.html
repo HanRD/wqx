@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta name="viewport" content="width=device-width,initial-scale=1"/>
 	<title>气象局信息管理</title>
 <link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
 <script type="text/javascript" src="../ivue/vue.min.js"></script>
@@ -10,17 +10,18 @@
 </head>
 <body>
 	<div id="infdisplay"></div>
+
 	<script type="text/javascript">
 		var information={
 			template:`
-			<Row id=""><Col :md="4">
+			<div id=""><Row><Col :md="4">
 			<div style="background:#eee;padding: 10px">
         <Card shadow :bordered="false">
             <p slot="title">气象局选择</p>
             <p><Tree ref="orgtree" :data="treedata" @on-check-change="showcheckednodes" show-checkbox></Tree></p>
         </Card>
     </div></Col>
-    <Col :md="10">
+    <Col :md="10" >
     <div style="background:#eee;padding:10px"><Card shadow :bordered="false">
             <p>编码:{{data.ID}}</p>
             <p>省属/直辖市:{{data.province}}</p>
@@ -39,11 +40,19 @@
             <p>联系邮箱2:\n{{data.contact.email2}}</p>
             </Col>
             </Row></p>
-            <p>合同名称:</p>
-            <p>合同编号:</p>
-        </Card></div>
+            <p>合同名称:{{data.contractname}}</p>
+            <p>合同编号:{{data.contractID}}</p>
+            <Row>
+            <Col span="12"><p>合同开始日期:{{data.contractduration.startdate}}</p></Col>
+            <Col span="12"><p>合同结束日期:{{data.contractduration.enddate}}</p></Col></Row>
+        </Card>
     </Col>
-    </Row>`,              //主体模块模板
+    <Col :md="10" >
+    <div style="background:#eee;padding:10px"><Card shadow :bordered="false"></Card></div>
+    </Col>
+    </Row>
+    <Table border stripe :columns="tablecolumn" highlight-row :data="tabledata"></Table>
+    </div>`,              //主体模块模板
 			data:function(){
 				return{
 					data:{            //气象局信息数据
@@ -57,6 +66,59 @@
 						contractID:"2232131234512",
 						contractduration:{startdate:"",enddate:""}
 					},
+					stationDataQuery:{
+						stationID:"",
+						province:"",
+					    organization:"",
+					    maintenanceOrg:"",
+					    maintenanceStaff:""
+					},
+					stationData:{
+					No:"",
+					stationID:"",
+					stationName:"",
+					Province:"",
+					address:"",
+					belonging:"",
+					longitude:"",
+					latitude:"",
+					maintenanceCost:"",
+					maintenanceOrg:"",
+					status:"",
+					initiateDate:"",
+					abandonDate:"",
+					inspectionInterval:"",
+					latestMaintenanceDate:"",
+					isBackbone:"",
+					description:"",
+					photograph:"",
+					productModel:"",
+					installDate:"",
+					dueDate:"",
+					examineType:""
+			    	},
+			    	tablecolumn:[
+			    	{title:'序号',key:'No'},
+			    	{title:'编号',key:'stationID'},
+			    	{title:'名称',key:'stationName'},
+			    	{title:'省份',key:'province'},
+			    	{title:'地址',key:'address'},
+			    	{title:'所属气象局',key:'belonging'},
+			    	{title:'经度',key:'longitude'},
+			    	{title:'纬度',key:'latitude'},
+			    	{title:'总维价格',key:'maintenanceCost'},
+			    	{title:'状态',key:'status'},
+			    	{title:'启用时间',key:'initiateDate'},
+			    	{title:'停用时间',key:'abandonDate'},
+			    	{title:'维护周期',key:'inspectionInterval'},
+			    	{title:'最近维护任务',key:'latestMaintenanceDate'},
+			    	{title:'图片',key:'photograph'},
+			    	{title:'装配产品',key:'productModel'},
+			    	{title:'安装日期',key:'installDate'},
+			    	{title:'过保日期',key:'dueDate'},
+			    	{title:'考核类型',key:'examineType'},
+			    	],
+			    	tabledata:[],
 					treedata:[
                     {
                         title: 'parent 1',

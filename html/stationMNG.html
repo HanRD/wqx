@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>气象站台站信息管理</title>
+	<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+	<script type="text/javascript" src="../ivue/vue.min.js"></script>
+    <script type="text/javascript" src="../ivue/iview.js"></script>
+</head>
+<body>
+	<div id="main"></div>
+	<script>
+		var main={
+			data:function(){
+				query:{
+					organization:"",
+					examineType:"",
+					stationID:"",
+					stationName:"",
+				},
+				tableColumn:{
+					No:"",
+					stationID:"",
+					stationName:"",
+					Province:"",
+					maintenanceOrg:"",
+				},
+				tabledata:[
+
+				],
+				newStationData:{
+
+				}
+				stationData:{
+					No:"",
+					stationID:"",
+					stationName:"",
+					Province:"",
+					address:"",
+					belonging:"",
+					coordinate:{latitude:"",longitude:""},
+					maintenanceCost:"",
+					maintenanceOrg:"",
+					status:"",
+					initiateDate:"",
+					abandonDate:"",
+					inspectionInterval:"",
+					recentmaintenanceDate:"",
+					isBackbone:"",
+					description:"",
+					photograph:"",
+					productModel:"",
+					installDate:"",
+					dueDate:"",
+					examineType:"",
+				}
+			},
+			methods:{
+
+			}
+		}
+
+	</script>
+</body>
+</html>
