@@ -24,12 +24,90 @@
                                 </Row>
     </div>
 	<div id="resulttable" >
-        <i-table style="margin-top:20" @on-current-change="holdclickedrow" ref="currentRowTable" highlight-row stripe :columns="tableheader" :data="tabledata">
+        <i-table ref="documenttable" style="margin-top:20" @on-current-change="holdclickedrow" ref="currentRowTable" highlight-row stripe :columns="tableheader" :data="tabledata">
         </i-table>
         <br>
-        <i-button type="primary" @click="exportData()"><Icon type="ios-download-outline"></Icon> 导出表格数据</i-button>
-        <i-button type="primary" @click="modal1 = true"><Icon type="plus"></Icon> 新增维护单</i-button>
+        <i-button type="primary" @click="modal1 = true"><Icon type="ios-download-outline"></Icon> 导出表格数据</i-button>
+        <i-button type="primary" @click="modal2 = true"><Icon type="plus"></Icon> 新增维护单</i-button>
         <i-button type="primary" @click="showData()" disabled id="observebtn"><Icon type="search"></Icon> 条目明细</i-button>
+        <Modal
+        v-model="modal1"
+        title="确认操作"
+        @on-ok="ok"
+        @on-cancel="cancel">
+        <p>确定要将表格内容下载至本地么？</p>
+        </Modal>
+        <Modal
+        v-model="modal2"
+        @on-ok="submitnewdocument"
+        @on-cancel="cancel"
+        :loading="loading">
+        <p slot="header" style="color:#308ef0;text-align:center">
+            <span>{{modal2title}}</span>
+            </p>
+        <i-form ref="documentform" :model="newMaintenanceDocument" :label-width="90" :rules="ruleValidate" label-position="left">
+          <form-item prop="reportedOrg" label="报障气象局: ">
+            <i-select v-model="newMaintenanceDocument.reportedOrg">
+              <i-option v-for="item in orgList" :value="item.label">{{item.label}}</i-option>
+            </i-select>
+          </form-item>
+
+          <form-item prop="stationName" label="气象站台站: ">
+            <i-select v-model="newMaintenanceDocument.stationName">
+              <i-option v-for="item in stationList" :value="item.label">{{item.label}}</i-option>
+            </i-select>
+          </form-item>
+
+          <form-item prop="inspectionPlan" label="巡检方案: ">
+            <i-select v-model="newMaintenanceDocument.inspectionPlan">
+              <i-option v-for="item in planList" :value="item.label">{{item.label}}</i-option>
+            </i-select>
+          </form-item>
+
+          <form-item prop="maintenanceCostSum" label="总维护价格: ">
+            <i-input type="text"></i-input>
+          </form-item>
+
+          <form-item prop="point" label="维修积分: ">
+            <i-input type="text"></i-input>
+          </form-item>
+
+          <form-item prop="confirmMode" label="确认模式: ">
+            <radio-group v-model="newMaintenanceDocument.confirmMode">
+                        <Radio label="automatic">自动确认</Radio>
+                        <Radio label="manualbyoperator">管理人员确认</Radio>
+            </radio-group>
+          </form-item>
+
+          <form-item prop="maintenanceTimeLimit" label="维护完成时限: ">
+            <Slider v-model="newMaintenanceDocument.maintenanceTimeLimit" max="96" show-input :tip-format="format"></Slider>
+          </form-item>
+
+          <form-item prop="maintenanceCategory" label="维护类别: ">
+            <i-select v-model="newMaintenanceDocument.maintenanceCategory">
+              <i-option v-for="item in categorylist" :value="item.label">{{item.label}}</i-option>
+            </i-select>
+          </form-item>
+
+          <form-item prop="maintenanceCategory" label="任务级别: ">
+            <i-select v-model="newMaintenanceDocument.maintenanceCategory">
+              <i-option v-for="item in tasklevellist" :value="item.label">{{item.label}}</i-option>
+            </i-select>
+          </form-item>
+
+          <form-item v-if="newMaintenanceDocument.maintenanceCategory=='维修'" prop="maintenancedoc" label="报障单编号: ">
+            <i-input type="text" v-model="newMaintenanceDocument.maintenancedoc"></i-input>
+          </form-item>
+
+          <form-item prop="description" label="故障描述: ">
+            <i-input type="textarea" v-model="newMaintenanceDocument.description"></i-input>
+          </form-item>
+
+          <form-item prop="note" label="备注: ">
+            <i-input type="textarea" v-model="newMaintenanceDocument.note"></i-input>
+          </form-item>
+        </i-form>
+        </Modal>
     </div>
     <div id="resultdetail"></div>
 <script type="text/javascript" src="../ivue/vue.min.js"></script>
@@ -126,6 +204,9 @@ var resulttable={
         return{
             observeactive:true,
             modal1:false,
+            modal2:false,
+            loading: true,
+            modal2title:"新增维护单",
             tableheader:[
             {title:"序号",key:"No"},
             {title:"维护人员姓名",key:"staffName"},
@@ -139,29 +220,39 @@ var resulttable={
             {No:3,staffName:"C",stationName:"三洞齐洪水库站",documentstatus:"待发布",startTime:"2018-05-10 12:00:48"},
             {No:4,staffName:"D",stationName:"三洞齐洪水库站",documentstatus:"待发布",startTime:"2018-05-10 12:00:48"},
             ],
+            newMaintenanceDocument:{
+                documentID:"",
+                reportedOrg:'New York',
+                stationName:"",
+                inspectionPlan:"",
+                documentstatus:"status2",
+                maintenanceCostSum:30,
+                point:2,
+                confirmMode:"",
+                maintenanceTimeLimit:"",
+                maintenanceCategory:"",
+                taskLevel:"",
+                description:"",
+                note:"",
+                maintenancedoc:""
+            },
             maintenanceDocumentinfo:{
                 documentID:"",
                 reportedOrg:"",
                 stationName:"",
                 inspectionPlan:"",
                 documentstatus:"status2",
-                maintenanceCostSum:"",
-                point:"",
+                maintenanceCostSum:0,
+                point:0,
                 confirmMode:"",
                 maintenanceTimeLimit:"",
                 maintenanceCategory:"",
                 taskLevel:"",
                 description:"",
-                note:""
+                note:"",
+                maintenancedoc:""
             },
-            ruleValidate:{
-                stationName:[
-                {required:true,message:'请选择台站',trigger:'change'}],
-                inspectionPlan:[
-                {required:true,message:'请选择巡检方案',trigger:'change'}],
-                description:[
-                {required:true,message:'请描述故障',trigger:'blur'}],
-            },
+
             orgList:[
             {
                 value: 'New York',
@@ -229,6 +320,12 @@ var resulttable={
             {value:'level2',label:'二级'},
             {value:'level3',label:'三级'},
             {value:'level4',label:'四级'},],
+            ruleValidate:{
+              stationName:[{required:true,message:"请选择气象站台站",trigger:'change'}],
+              inspectionPlan:[{required:true,message:"请选择巡检方案",trigger:'change'}],
+              description:[{required:true,message:'请描述故障',trigger:'blur'}],
+              maintenanceCostSum:[{type:"number",message:"请输入正确的金额",trigger:"change"}]
+            }
 
         }
     },
@@ -261,9 +358,30 @@ var resulttable={
             },
         ok(data){
             console.log(data);
+            this.$refs.documenttable.exportCsv({filename:"维护单列表.csv"})
         },
         cancel(){
 
+        },
+        changeLoading() {
+            this.loading = false;
+            this.$nextTick(() => {
+              this.loading = true;
+            });
+          },
+        submitnewdocument(){
+                this.$refs.documentform.validate((valid) => {
+                    if (valid) {
+                        setTimeout(() => {
+                this.changeLoading();
+                this.modal1 = false;
+                this.$Message.success('done');
+                this.$Modal.re
+              }, 1000);
+                    } else {
+                      return this.changeLoading();
+                    }
+                })  
         }
     }
 }
