@@ -41,7 +41,7 @@
         v-model="modal2"
         @on-ok="submitnewdocument"
         @on-cancel="cancel"
-        :loading="loading">
+        :closable="false" :mask-closable="false">
         <p slot="header" style="color:#308ef0;text-align:center">
             <span>{{modal2title}}</span>
             </p>
@@ -107,7 +107,19 @@
             <i-input type="textarea" v-model="newMaintenanceDocument.note"></i-input>
           </form-item>
         </i-form>
+        <div slot="footer">
+            <i-button type="ghost" size="large" @click="abandonediting">取消</i-button>
+            <i-button type="primary" size="large" @click="submitnewdocument">提交</i-button>
+        </div>
         </Modal>
+        <Modal
+        v-model="modal1"
+        title="确认操作"
+        @on-ok="quit()"
+        @on-cancel="cancel">
+        <p>确定要放弃编辑的文档么？</p>
+        </Modal>
+
     </div>
     <div id="resultdetail"></div>
 <script type="text/javascript" src="../ivue/vue.min.js"></script>
@@ -372,17 +384,22 @@ var resulttable={
         submitnewdocument(){
                 this.$refs.documentform.validate((valid) => {
                     if (valid) {
-                        setTimeout(() => {
-                this.changeLoading();
-                this.modal1 = false;
-                this.$Message.success('done');
-                this.$Modal.re
-              }, 1000);
+                      this.modal2=false;
+                      console.log(this.$data.newMaintenanceDocument);
+                      this.$refs.documentform.resetFields();
                     } else {
-                      return this.changeLoading();
+                      
                     }
                 })  
+        },
+        abandonediting(){
+          this.modal3=true;
+        },
+        quit(){
+          this.modal2=false;
+          this.$refs.documentform.resetFields();
         }
+        
     }
 }
 
