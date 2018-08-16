@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+<script type="text/javascript" src="../ivue/vue.min.js"></script>
+<script type="text/javascript" src="../ivue/iview.js"></script>
+<style>
+	html{
+		background: #eee
+	}
+</style>
+</head>
+<body>
+	<div id="main"></div>
+	<script>
+
+     var main={
+     	template:`
+     	<div style="padding:10px;background-color:#eee">
+     	<Card>
+     	<p slot="title" text-align="center">大家好我是正则表达式测试机(·v·)</p>
+     	↓这里是输入区域
+     	<Input type="textarea" v-model="sourcestr" placeholder="请输入待匹配字符串"></Input>
+     	<Row type="flex">
+     	<Col>
+     	<Input type="text" v-model="patt1" placeholder="请输入正则表达式"></Input>
+     	</Col>
+     	<Col>
+     	<Button type="primary" @click="test">点我测试</Button></Row>
+     	</Col>
+     	<div style="margin-top:10px">
+     	↓这里是匹配结果
+     	<Input type="textarea" v-model="result" readonly></Input>
+     	</Card>
+     	</div>
+     	</div>
+     	`,
+     	data:function(){
+     		return{
+     			sourcestr:"",
+     			patt1:"",
+     			result:""
+     		}
+     	},
+     	methods:{
+     		test(){
+     			const patt=this.patt1;
+     			const str=this.sourcestr;
+     			if(str&&patt){
+     			console.log(str.match(patt,"g"))
+     			this.result=str.match(patt,"g")[0];}
+     			if(!str){
+     				this.$Modal.error({title:"没有输入待匹配字符串诶",content:"没东西给我匹配啊？"})
+     			}
+     			if(str&&!patt){
+     				this.$Modal.error({title:"没有输入正则表达式诶",content:"你让我匹配什么啊？"})
+     			}
+     		}
+     	}
+     }
+     var Main = Vue.extend(main)
+     new Main().$mount("#main")
+	</script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/iview/dist/styles/iview.css">
+	<script type="text/javascript" src="../ivue/vue.min.js"></script>
+    <script src="https://unpkg.com/iview/dist/iview.min.js"></script>
+    <style>
+    	.chatwindow{
+    		height:600px;
+    		width:800px;
+    		box-shadow: 0px 0px 20px #333333;
+    		position:fixed;
+    		top:200px;
+    		left:200px;
+    	}
+    	.cornerBTN{
+    		position:absolute;
+    		right:12px;
+    		height:30px;
+    		width:60px;
+    		z-index:100;
+    		display:inline-block;
+    	}
+    	.btn{
+    		height:30px;
+    		width:30px;
+    		font-size: 30px;
+
+    	}
+    	.sidebar{
+    		position:relative;
+    		height:600px;
+    		width:100%;
+    		background-color: #D9D9D9;
+    		padding:20px 10px;
+    	}
+    	.currentcontact{
+    		
+    		margin-bottom:10px;
+    		padding:5px;
+    		border-radius:3px;
+    		overflow-x: auto;
+    		transition: ease 0.5s;
+    		-moz-transition: ease 0.5s;	/* Firefox 4 */
+    		-webkit-transition: ease 0.5s;	/* Safari 和 Chrome */
+    		-o-transition: ease 0.5s;	/* Opera */
+    	}
+
+    	.currentcontact.selected{
+    		background-color: #F2F2F2;
+    	}
+    	.avatar{
+    		display:inline-block;
+    		height:50px;
+    		width:50px;
+    	}
+    	.nickname{
+    		position: relative;
+    		left:10px;
+    		bottom:12px;
+    		display:inline-block;
+    		font-size: 24px;
+    		line-height: 100%
+    	}
+    	.chattingarea{
+    		height:600px;
+    		width:100%;
+    		background-color:#FFFFFF;
+    	}
+    	.chattingareaheader{
+    		width:100%;
+    		height:80px;
+    		background-color: #F2F2F2 !important
+    	}
+    	.headeravatar{
+    		padding:15px;
+    		width:80px;
+    		display: inline-block;
+    	}
+    	.headerinf{
+    		display: inline-block;
+    	}
+    	.headertag{
+    		display: inline;
+    	}
+    	.headerNickname{
+    		display: inline;
+    	}
+    	.headerAddress{
+
+    	}
+    	.chattingareacontent{
+    		width:100%;
+    		height:330px;
+    	}
+    	.chattingareaconsole{
+    		width:100%;
+    		height:190px;
+    	}
+    	.upperconsole{
+    		width:100%;
+    		height:44px;
+    		border-top:1px solid #EDEDED;
+    	}
+    	.middletextarea{
+    		width:100%;
+    		height:99px;
+    		border-top:1px solid #EDEDED;
+    	}
+    	.bottomconsole{
+    		width:100%;
+    		height:44px;
+    		border-top:1px solid #EDEDED;
+    	}
+    	.functionbtn{
+    		font-size:24px;
+    		padding:10px;
+    		line-height:100%;
+    		color:#999999;
+    		-webkit-user-select:none;
+    		-moz-user-select:none;
+    		-ms-user-select:none;
+    		user-select:none;
+    	}
+
+    	.history{
+    		font-size:20px;
+    		padding:10px;
+    		line-height: 100%;
+    		color:#999999;
+    		-webkit-user-select:none;
+    		-moz-user-select:none;
+    		-ms-user-select:none;
+    		user-select:none;
+    	}
+
+    </style>
+</head>
+<body>
+	<div>
+		<div>
+			<div id="app"></div>
+		</div>
+		</div>
+		<Script>
+			var chatwindow={
+				template:`
+				<div class="chatwindow">
+				<div class="cornerBTN">
+				<Row type="flex">
+				<Col>
+				<div class="btn">
+				<Icon type="ios-remove" @click="minimize" />
+				</div>
+				</Col>
+				<Col>
+				<div class="btn"><Icon type="ios-close" @click="close" />
+				</div>
+				</Col>
+				</Row>
+				</div>
+
+				<Row>
+				<Col span="6">
+				<div class="sidebar">
+				<div class="currentcontact" v-for="item in chattingData" v-bind:class="{'selected':item.selected}" @click="holdselection(item)">
+				<div class="avatar">
+				<img style="border-radius:50px" src="https://i.loli.net/2017/08/21/599a521472424.jpg" width="50px"/>
+				</div>
+				<div class="nickname">{{item.name}}</div>
+				</div>
+				</div>
+				</Col>
+				<Col span="18">
+				<div class="chattingarea">
+				<div class="chattingareaheader">
+				<div class="headeravatar">
+				<img style="border-radius:50px" src="https://i.loli.net/2017/08/21/599a521472424.jpg" width="50px"/>
+				</div>
+				<div class="headerinf">
+				<div class="headertag"><Tag :color="chatwindowdata.tagcolor" >{{chatwindowdata.role}}</Tag></div>
+				<div class="headerNickName">{{chatwindowdata.name}}</div>
+				<div class="headerAddress">{{chatwindowdata.address}}</div></div>
+				</div>
+				<div class="chattingareacontent">
+				</div>
+				<div class="chattingareaconsole">
+				<div class="upperconsole">
+				<Row type="flex" justify="space-between">
+				<Col>
+				<div class="functionbtn"><Icon type="md-image" @click="sendimage"/>    <Icon type="ios-pin" @click="sendlocation"/>    <Icon type="ios-call" @click="phonecall"/></div>
+				</Col>
+				<Col>
+				<div class="history" @click="showhistory"><div style="display:inline-block;line-height:100%"><Icon style="padding-bottom:2px" type="md-list-box" /></div><div style="display:inline-block;font-size:16px;">消息记录</div></div>
+				</Col>
+				</Row>
+				</div>
+				<div class="middletextarea">
+				</div>
+				<div class="bottomconsole">
+				<div style="padding:7px 12px">
+				<Row type="flex" justify="end"><Col><Button type="primary" @click="sendmessage">发送</Button></Col></Row>
+				</div>
+				</div>
+				</div>
+				</div>
+				</Col>
+				</Row>
+				</div>
+				`,
+				data:function(){
+					return{
+						chattingData:[
+						{
+							selected:false,
+							avatarurl:"",
+							role:"操作员",
+							tagcolor:"#996600",
+							name:"王大力",
+							phone:"18041022000",
+							address:"广东省>茂名市>化州市",
+							chatlog:[
+							{
+								sendby:"C",
+								type:"text",
+								content:"zaima",
+								sendtime:""
+							},
+							{
+								sendby:"C",
+								type:"text",
+								content:"zaima",
+								sendtime:""
+							},
+							{
+								sendby:"C",
+								type:"text",
+								content:"出来！！！！！！！",
+								sendtime:""
+							},
+							{
+								sendby:"M",
+								type:"text",
+								content:"guna！！！！！！！！！！",
+								sendtime:""
+							}
+							]
+						},{
+							selected:true,
+							avatarurl:"",
+							role:"管理员",
+							tagcolor:"#FF6600",
+							name:"力大王",
+							phone:"18041022000",
+							address:"我去修",
+							chatlog:[
+							{
+								sendby:"M",
+								type:"text",
+								content:"啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
+								sendtime:""
+							},
+							{
+								sendby:"C",
+								type:"text",
+								content:"滚，别犯病",
+								sendtime:""
+							},
+							{
+								sendby:"C",
+								type:"text",
+								content:"晚上吃啥？",
+								sendtime:""
+							},
+							{
+								sendby:"M",
+								type:"text",
+								content:"吃饭",
+								sendtime:""
+							}
+							]
+						}
+						],
+						chatwindowdata:{},
+					}
+				},
+				methods:{
+					sendmessage(){
+						console.log("发送消息")
+					},
+					minimize(){
+						console.log("最小化")
+					},
+					close(){
+						console.log("关闭")
+					},
+					showhistory(){
+						console.log("查看历史记录")
+					},
+					sendimage(){
+						console.log("发送图片")
+					},
+					sendlocation(){
+						console.log("发送地图定位")
+					},
+					phonecall(){
+						console.log("语音通话")
+					},
+					holdselection(data){
+						this.chattingData.forEach(function(item,index){
+							item.selected=false;
+						})
+						data.selected=true;
+						this.chatwindowdata=data
+					}
+				},
+				mounted(){
+					this.chatwindowdata=this.chattingData[1];
+				}
+			}
+			var Chatwindow=Vue.extend(chatwindow);
+			new Chatwindow().$mount("#app")
+		</Script>
+</body>
+</html>

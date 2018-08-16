@@ -4,6 +4,14 @@
 	<meta charset="UTF-8">
 	<title>SalaryManaging</title>
 	<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+	<style>
+		.fade-enter-active, .fade-leave-active {
+          transition: opacity .5s
+        }
+        .fade-enter, .fade-leave-active {
+          opacity: 0
+        }
+	</style>
 </head>
 <body>
 	<div id="query">
@@ -31,6 +39,7 @@
     <div id="table">
     	
     </div>
+
 
 <script type="text/javascript" src="../ivue/vue.min.js"></script>
 <script type="text/javascript" src="../ivue/iview.js"></script>
@@ -77,73 +86,90 @@
 		<div>
 		<Table border stripe :columns="columns" highlight-row :data="data"></Table>
 		<Button @click="revisethisdoc()" id="btn1">修改</Button>
-        <Button @click="newdocument()" id="btn2">预结算</Button>
-        <Button @click="" id="btn3">结算</Button>
-        <Button @click="" id="btn4">撤销</Button>
-        <Button @click="" id="btn5">提请付款</Button>
-        <Button @click="" id="btn6">输出</Button>
-        <Modal id="newwin" scrollable='true' v-model='showmodal' :closable="false" :mask-closable="false" @on-ok="ok()" @on-cancel="cancel()">
-            <p slot="header" style="color:#308ef0;text-align:center">
-            <span>{{modaltitle}}</span>
-            </p>
-            <Form ref="documentform" :model="documentdata" label-position="left" :label-width="70" >
+		<Button @click="newdocument()" id="btn2">预结算</Button>
+		<Button @click="" id="btn3">结算</Button>
+		<Button @click="" id="btn4">撤销</Button>
+		<Button @click="" id="btn5">提请付款</Button>
+		<Button @click="" id="btn6">输出</Button>
+		<transition name="fade">
+		<div v-show="showmodal">
+		<div style="background:#eee;padding: 10px" >
+		<Card shadow :bordered="false">
+		<p slot="title">{{modaltitle}}</p>
+		<Form ref="documentform" :model="documentdata" label-position="left" :label-width="70" >
+		<Row>
+		<Col span="6">
+		<FormItem label='维护公司:'>
+		<Select label='supident' v-model="defaultorganization" style="width:100%" @on-change="observechange" label-in-value=true>
+		<Option v-for="item in organizationlist" :value="item.value" :key="item.value">{{ item.title }}</Option>
+		</Select>
+		</FormItem>
+		</Col>
+		<Col span="6" offset="2">
+		<FormItem label='用户名:'>
+		<Select v-model="documentdata.username" width="100%">
+		<Option v-for="item in stafflist" :value="item.value" :key="item.value">{{ item.title }}</Option>
+		</Select>
+		</FormItem>
+		</Col>
 
-                <FormItem label='维护公司:'>
-                    <Select label='supident' v-model="defaultorganization" style="width:100%" @on-change="observechange" label-in-value=true>
-                        <Option v-for="item in organizationlist" :value="item.value" :key="item.value">{{ item.title }}</Option>
-                    </Select>
-                </FormItem>
+		<Col span="8" offset="2">
+		<FormItem prop="date" label="起始结束时间:" label-width="100%">
+		<DatePicker v-model="documentdata.date" type="daterange" split-panels placeholder="选择起始结束日期"></DatePicker>
+		</FormItem>
+		</Col>
+		</Row>
 
-                <FormItem label='用户名:'>
-                  <Select v-model="documentdata.username" style="width:100%">
-                    <Option v-for="item in stafflist" :value="item.value" :key="item.value">{{ item.title }}</Option>
-                  </Select>
-                </FormItem>
+		<Row>
+		<Col span="6">
+		<FormItem label='基本工资:'>
+		<Input v-model="documentdata.basicsalary" @on-change="calculatepayment"></Input>
+		</FormItem>
+		</Col>
 
-                <FormItem prop="date" label="起始结束时间:" label-width="100%">
-			      <DatePicker v-model="documentdata.date" type="daterange" split-panels placeholder="选择起始结束日期"></DatePicker>
-			    </FormItem>
+		<Col span="6" offset="2">
+		<FormItem label='服务质量奖励:'>
+		<Input v-model="documentdata.qosbonus" @on-change="calculatepayment"></Input>
+		</FormItem>
+		</Col>
 
-                <FormItem label='基本工资:'>
-                  <Input v-model="documentdata.basicsalary" @on-change="calculatepayment"></Input>
-                </FormItem>
+		<Col span="6" offset="2">
+		<FormItem label='个税:'>
+		<Input v-model="documentdata.personaltax" @on-change="calculatepayment"></Input>
+		</FormItem>
+		</Col>
+		</Row>
+		<Row>
+		<Col span="6">
+		<FormItem label='补贴:'>
+		<Input v-model="documentdata.allowance" @on-change="calculatepayment"></Input>
+		</FormItem>
+		</Col>
 
-                <FormItem label='维护工资:'>
-                  <Input v-model="documentdata.maintenancesalary" @on-change="calculatepayment"></Input>
-                </FormItem>
+		<Col span="6" offset="2">
+		<FormItem label='发单管理奖励:'>
+		<Input v-model="documentdata.mngbonus" @on-change="calculatepayment"></Input>
+		</FormItem>
+		</Col>
 
-                <FormItem label='服务质量奖励:'>
-                  <Input v-model="documentdata.qosbonus" @on-change="calculatepayment"></Input>
-                </FormItem>
+		<Col span="6" offset="2">
+		<FormItem label='实发工资合计:'>
+		<Input v-model="documentdata.payment" readonly></Input>
+		</FormItem>
+		</Col>
+		</Row>
 
-                <FormItem label='奖惩金额:'>
-                  <Input v-model="documentdata.bonusamount" @on-change="calculatepayment"></Input>
-                </FormItem>
-
-                <FormItem label='个税:'>
-                  <Input v-model="documentdata.personaltax" @on-change="calculatepayment"></Input>
-                </FormItem>
-
-                <FormItem label='补贴:'>
-                  <Input v-model="documentdata.allowance" @on-change="calculatepayment"></Input>
-                </FormItem>
-
-                <FormItem label='发单管理奖励:'>
-                  <Input v-model="documentdata.mngbonus" @on-change="calculatepayment"></Input>
-                </FormItem>
-
-                <FormItem label='实发工资合计:'>
-                  <Input v-model="documentdata.payment" readonly></Input>
-                </FormItem>
-
-                <FormItem label='备注:'>
-                  <Input type="textarea" v-model="documentdata.note"></Input>
-                </FormItem>
-            <Formitem class=""></Formitem>
-            <Formitem class=""></Formitem>
-            </Form>
-        </Modal>
-        </div>`,
+		<FormItem label='备注:'>
+		<Input type="textarea" v-model="documentdata.note"></Input>
+		</FormItem>
+		<Button type="primary" @on-click="">提交</Button>
+		<Button type="ghost" @on-click="">取消</Button>	
+		</Form>
+		</Card>
+		</div>
+		</div>
+		</transition>
+		</div>`,
         created:function(){
         	console.log('main module created')
         	this.$data.stafflist=this.$data.stafflist1;
@@ -154,7 +180,6 @@
 				showmodal:false,
 				modaltitle:"嗯哼!",
 				columns:[
-				{title:"序号",key:"No"},
 				{title:"用户名",key:"username"},
 				{title:"维护人员姓名",key:"staffname"},
 				{title:"身份证号",key:"staffpid"},
@@ -228,14 +253,18 @@
 		},
 		methods:{
 			newdocument(){
-				console.log(this.$data);
+				this.$data.showmodal=false;
 				this.$data.modaltitle="新增预结算信息"
-				this.$data.showmodal=true;
+				if(!this.$data.showmodal){
+				this.$data.showmodal=true;}
+				else{console.log("switching");this.$refs['documentform'].resetFields();}
 				
 			},
 			revisethisdoc(){
 				this.$data.modaltitle="修改预结算信息"
-				this.$data.showmodal=true;
+				if(!this.$data.showmodal){
+				this.$data.showmodal=true;}
+				else{console.log("switching");this.$refs['documentform'].resetFields();}
 			},
 			observechange(value){
 				console.log(value)

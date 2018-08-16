@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>插件</title>
+
+<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+<script type="text/javascript" src="../ivue/vue.min.js"></script>
+<script type="text/javascript" src="../ivue/iview.js"></script>
+<script src="https://unpkg.com/ionicons@4.3.0/dist/ionicons.js"></script>
+<style>
+
+	.tool {
+		position:fixed;
+		bottom:10px;
+		right:10px;
+		width:400px;
+		height:300px;
+		box-shadow:0 0 100px 0px;
+	}
+	.background{
+		background-image: url(../images/u3.jpg);
+		background-repeat: no-repeat;
+		background-size: 100% 100%
+	}
+	.greeting{
+		margin-top:24px;
+		font-size:28px;
+		font-family:'Microsoft Tai Le';
+		font-weight:400;
+		line-height: 100%;
+		height:36px;
+	}
+	.text{
+		margin-top:24px;
+		font-size:16px;
+		font-family:'Microsoft Tai Le';
+		font-weight:400;
+		line-height: 100%;
+		height:21px;
+	}
+	.header{
+		margin-left:10px;
+		font-size:12px;
+		font-family:'Microsoft Tai Le';
+		font-weight:400;
+		margin-top:9px;
+	}
+	.button{
+		margin-top:15px;
+		margin-right:15px;
+		font-size:24px;
+		color:#CDCDCD;
+	}
+	.bottombuttoncontainer{
+		margin-top:24px;
+		padding-bottom:43px;
+	}
+</style>
+</head>
+<body>
+	<div id='app'></div>
+	<script>
+		var tool={
+			template:`
+			<div class='tool'>
+			<div class='background'>
+			<Row type='flex' justify='space-between'>
+			<Col>
+			<div class='header'>{{user}}-{{role}}</div>
+			</Col>
+			<Col>
+			<div class='button'>
+			<ion-icon @click='close' name="close"></ion-icon></div>
+			</Col>
+			</Row>
+			<Row>
+			<Col offset='12'><div class='greeting'>{{greetingstr}}</div></Col>
+			</Row>
+			<Row><Col offset='3'><div class='text'>欢迎登陆我去修平台</div></Col></Row>
+			<Row><Col offset='8'><div class='text'>请选择要使用的话机</div></Col></Row>
+			<div class='bottombuttoncontainer'>
+			<Row><Col span='2' offset='3'>
+			<Button type='primary' @click='btn1'>主班</Button></Col>
+			<Col span='2' offset='3'>
+			<Button type='primary' @click='btn2'>副班</Button></Col></Row>
+			</div>
+            </div>
+			</div>
+			`,
+			data:function(){
+				return {
+					user:"桑世强",
+					role:"我去修管理员",
+					greetingstr:"下午好！",
+
+				}
+			},
+			methods:{
+				minimize(){
+					console.log('最小化')
+				},
+				close(){
+					console.log('关闭')
+				},
+				btn1(){
+					console.log('主班')
+				},
+				btn2(){
+					console.log('副班')
+				}
+			}
+		}
+		var Tool=Vue.extend(tool)
+		new Tool().$mount('#app')
+	</script>
+</body>
+</html>

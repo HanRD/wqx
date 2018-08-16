@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>维护人员管理</title>
+	<link rel="stylesheet" type="text/css" href="../ivue/styles/iview.css">
+	<script type="text/javascript" src="../ivue/vue.min.js"></script>
+    <script type="text/javascript" src="../ivue/iview.js"></script>
+</head>
+<body>
+	<div id="main"></div>
+	<script>
+		var main={
+			data:function(){
+				query:{
+					organization:"",
+					examineType:"",
+					stationID:"",
+					stationName:"",
+				},
+				tableColumn:[
+				{title:"用户名",key:"username"},
+				{title:"姓名",key:"name"},
+				{title:"技术等级",key:"userlevel"},
+				{title:"人员审核状态",key:"status"},
+				{title:"维护公司",key:"company"}
+				],
+				tabledata:[
+
+				],
+				newStaffData:{
+
+				}
+				stationData:{
+					No:"",
+					stationID:"",
+					stationName:"",
+					Province:"",
+					address:"",
+					belonging:"",
+					coordinate:{latitude:"",longitude:""},
+					maintenanceCost:"",
+					maintenanceOrg:"",
+					status:"",
+					initiateDate:"",
+					abandonDate:"",
+					inspectionInterval:"",
+					recentmaintenanceDate:"",
+					isBackbone:"",
+					description:"",
+					photograph:"",
+					productModel:"",
+					installDate:"",
+					dueDate:"",
+					examineType:"",
+				}
+			},
+			methods:{
+
+			}
+		}
+
+	</script>
+</body>
+</html>

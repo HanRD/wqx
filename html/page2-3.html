@@ -1,3 +1,4 @@
+<!-- 模板渲染 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +18,9 @@
 		var maindata={
 			template:`<div><Row><Col :lg="4" :sm="8">
 		<div style="background:#eee;padding: 10px" >
-        <Card shadow :bordered="false">
+        <Card shadow :bordered="false"><p slot="title">机构选择</p>
         <div style="height:400px">
-            <p slot="title">机构选择</p>
+            
             <p><Tree ref="orgtree" :data="treedata" @on-check-change="showcheckednodes" show-checkbox></Tree></p></div>
         </Card>
         </div>
@@ -37,7 +38,7 @@
             <Col :lg="{span:1,offset:13}" :sm="{span:2,offset:8}" :xs={span:2,offset:5}><Button type="primary" icon="archive" @click="output()"></Button></Col>
             <Col :lg="{span:1}" :sm="{span:1}" :xs={span:1}><Button type="primary" icon="plus-round" @click="newdata()"></Button></Col>
 		</Form>
-        <div width=100%><Table ref="table" border stripe :columns="columns" highlight-row :data="tabledata" min-width="600px" height="400" @on-current-change="holdclickedrow"></Table>
+        <div width=100%><Table ref="table" border stripe :columns="columns" highlight-row :data="tabledata" min-width="600px" height="459" @on-current-change="holdclickedrow"></Table>
         </div>
         </div></Col><Col></Col></Row>
         <Modal
@@ -118,38 +119,50 @@
                         oplevel:"",
                         wxid:""
                     },
-					treedata:[
+					treedata:[{title:'我去修管理系统',
+                    expand: true,
+                        children: [
                     {
-                        title: 'parent 1',
+                        title: '中国气象局',
                         expand: true,
                         children: [
                             {
-                                title: 'parent 1-1',
+                                title: '广东市气象局',
                                 expand: true,
                                 children: [
                                     {
-                                        title: 'leaf 1-1-1'
-                                    },
-                                    {
-                                        title: 'leaf 1-1-2',
-                                        checked:true
+                                        title: '茂名市气象局',
+                                        expand: true,
+                                        children: [
+                                        {title: '化州市气象局'}
+                                        ]
                                     }
                                 ]
                             },
                             {
-                                title: 'parent 1-2',
+                                title: '四川省气象局',
                                 expand: true,
                                 children: [
                                     {
-                                        title: 'leaf 1-2-1'
+                                        title: '资阳市气象局',
+                                        expand: true,
+                                        children: [
+                                        {title: '雁江区气象局'},
+                                        {title: '乐至县气象局'},
+                                        {title: '安岳县气象局'},
+                                        ]
                                     },
                                     {
-                                        title: 'leaf 1-2-1'
+                                        title: '眉山市气象局',
+                                        checked:true,
+                                        children:[]
                                     }
                                 ]
                             }
+
                         ]
-                    }
+                   }] 
+               }
                 ]
 				}
 			},

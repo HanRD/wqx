@@ -45,14 +45,15 @@
 
     <template id="tabletemplate">
         <div>
-           <i-table border stripe :columns="columns" highlight-row :data="data"></i-table>
+           <i-table border stripe :columns="columns" highlight-row :data="data" height="280"></i-table>
         </div>
     </template>
 
     <template id="detailcard">
         <div style="background:#eee;padding: 10px">
-            <Card shadow>
-                <p slot="title">报障信息</p>
+
+            <Card shadow><p slot="title">报障信息</p>
+                <div style="height:394px">
                 <p>报障方式: {{detaildata.reportmethod}}</p>
                 <p><Row>
                 <i-col span="8">编号：{{detaildata.id}}</i-col>
@@ -72,6 +73,9 @@
                 <i-col span="12">提交人员：{{detaildata.submitBy}}</i-col>
                 <i-col span="12">提交时间：{{detaildata.submittime}}</i-col>
                 </Row></p>
+                <p>照片: 
+                    <div style="margin-left:10px"><a target="_blank" href="../images/sampleimg.png"><img src="../images/sampleimg.png" height="144px"alt=""></a></div>
+                </p></div>
             </Card>
             </div>
     </template>
@@ -112,7 +116,7 @@
                     {title:'提交人',key:''},
                     {title:'提交时间',key:''},
                     ],
-                    data:[]
+                    data:[{},{},{},{},{},{}]
 
                 }
             }
@@ -122,23 +126,23 @@
     		data:function(){
     			return{
                     detaildata:{
-                        reportmethod:"",
+                        reportmethod:"监测线上报障",
                         upgradedata:{by:"",date:"",upgradefrom:""},
-                        id:"",
-                        stationID:"",
-                        stationName:"",
+                        id:"MRF00000382",
+                        stationID:"S1445",
+                        stationName:"清流",
                         coordinate:"",
-                        address:"",
-                        stationtype:"",
-                        description:"",
-                        faulttype:"",
+                        address:"新都区清流镇农业科技园区",
+                        stationtype:"六要素",
+                        description:"无数据",
+                        faulttype:"其它故障",
                         analyze:"",
                         tools:"",
                         timedemand:"",
                         note:"",
-                        submitBy:"",
-                        submittime:"",
-                        photograph:"",
+                        submitBy:"879011(赵俊)",
+                        submittime:"2018年05月30日08时48分",
+                        photograph:"../images/sampleimg.png",
                     }
     			}
     		}
