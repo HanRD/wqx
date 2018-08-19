@@ -80,12 +80,15 @@
     		display: inline-block;
     	}
     	.headerinf{
+    		top:20px;
+    		position: absolute;
     		display: inline-block;
     	}
     	.headertag{
     		display: inline;
     	}
     	.headerNickname{
+    		font-size:30px;
     		display: inline;
     	}
     	.headerAddress{
@@ -181,10 +184,13 @@
 				</div>
 				<div class="headerinf">
 				<div class="headertag"><Tag :color="chatwindowdata.tagcolor" >{{chatwindowdata.role}}</Tag></div>
-				<div class="headerNickName">{{chatwindowdata.name}}</div>
+				<span class="headerNickName">{{chatwindowdata.name}}</span>
 				<div class="headerAddress">{{chatwindowdata.address}}</div></div>
 				</div>
 				<div class="chattingareacontent">
+				<div v-for="item in chattingData.chatlog" class="messageCard">
+				<div v-bind:></div>
+				</div>
 				</div>
 				<div class="chattingareaconsole">
 				<div class="upperconsole">
